@@ -99,12 +99,11 @@
         <article>
           
           <input type="file" name="refImg">
-          <input type="hidden" name="badge1" value="b">
+          <!-- <input type="hidden" name="badge1" value="b"> -->
         </article>
         <label for="tamImg">References(from Tamwood)</label>
         <article>
           <input type="file" name="tamImg">
-          <input type="hidden" name="badge2" value="b">
         </article>
       </section>
       <section class="button">
@@ -140,16 +139,16 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
       // to check if there are values in $refImg & $tamImg to give user badge
       if($refImg !=" " && $tamImg != ""){
         //user can get 2 pending badge(value=b)
-        $badge1 = $_POST['badge1'];
-        $badge2 = $_POST['badge2'];
+        $badge1 = 'b';
+        $badge2 = 'b';
       }elseif($refImg !=" " && $tamImg == ""){
         //user can get 1 panding badge(value=b)
-        $badge1 = $_POST['badge1'];
+        $badge1 = 'b';
         $badge2 = "a";
       }elseif($refImg ==" " && $tamImg != ""){
-        $badge1 = "a";
-        $badge2 = $_POST['badge2'];
         //user can get 1 panding badge(value=b)
+        $badge1 = "a";
+        $badge1 = 'b';
       }
       
       $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
