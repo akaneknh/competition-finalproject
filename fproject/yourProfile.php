@@ -56,7 +56,8 @@
             <label for="profImg">Profile image</label>
               <article>
                 <label for="profImg">select your file<i class="fa-solid fa-file-arrow-up"></i></label>
-                <input type="file"  name="profImg" required>
+                <input type="file"  name="profImg" value="<?php echo $user['profImg']; ?>">
+                <!-- value or required -->
               </article>
             <label for="content">Content</label>
             <textarea name="content"></textarea>
@@ -72,33 +73,32 @@
   <?php
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
-  $destDir = './img/profile_img';
-  $sourceFile = $_FILES['profImg'];
-  $sourceFileDetails = pathinfo($sourceFile['name']);
-  $imgArray = (" jpg,png,jpeg,gif,tiff,psd,pdf,eps");
-  if(strpos($imgArray,$sourceFileDetails['extension']) !=0 && getimagesize($sourceFile['tmp_name'])){
-      if($sourceFile['size']<400000){
-          if(move_uploaded_file($sourceFile['tmp_name'],$destDir.$sourceFile['name'])){
-            $profImg = $_FILES['profImg']['name'];
-            $content = htmlspecialchars($_POST['content']);
-
-
-            $useremail = $user['email'];
+  if(uploadfile('./img/profile_img','profImg')==='true'){
+    $profImg = $_FILES['profImg']['name'];
+    $content = htmlspecialchars($_POST['content'], ENT_QUOTES);
+  }
   
-            $profCmd = "UPDATE user_tb SET profImg='".$profImg."', profileContent='".$content."' WHERE email='$useremail'";
-            if($dbCon->query($profCmd) === true){
-              print_r($useremail);
-              $dbCon->close();
-            // session_unset();
-            // session_destroy();
-            header("Location: http://localhost/fproject/yourpost.php");
-            }
-            echo $dbCon->error;
-          }
-        }
-      }
+  $useremail = $user['email'];
+  
+  $profCmd = "UPDATE user_tb SET profImg='".$profImg."', profileContent='".$content."' WHERE email='$useremail'";
+  if($dbCon->query($profCmd) === true){
+    $dbCon->close();
+    // session_unset();
+    // session_destroy();
+    header("Location: http://localhost/fproject/yourpost.php");
+  }
+  echo $dbCon->error;
 }
 
+
+// $destDir = './img/profile_img';
+// $sourceFile = $_FILES['profImg'];
+// $sourceFileDetails = pathinfo($sourceFile['name']);
+// print_r($sourceFileDetails);
+// $imgArray = (" jpg,png,jpeg,gif,tiff,psd,pdf,eps");
+// if(strpos($imgArray,$sourceFileDetails['extension']) !=0 && getimagesize($sourceFile['tmp_name'])){
+//     if($sourceFile['size']<400000){
+//         if(move_uploaded_file($sourceFile['tmp_name'],$destDir.$sourceFile['name'])){
 ?>
 
 </body>

@@ -9,7 +9,12 @@
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/login.php"); //loginpage
   }else{
-    $user = $_SESSION['user'];
+    $email = $_SESSION['user'];
+    $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
+    $useresult = $dbCon->query($logCmd);
+    if($useresult->num_rows > 0){
+      $user = $useresult->fetch_assoc();
+    }
   }
 
   ?>
@@ -137,8 +142,6 @@
 
 <?php 
   if($_SERVER['REQUEST_METHOD']=='POST'){// check order and edit
-    $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$_POST['pass']."',profImg='".$_FILES['profImg']['name']."',refImg='".$_FILES['profImg']['name']."',tamImg='".$_FILES['tamImg']['name']."' WHERE user_id='".$user['user_id']."'";
-
     if($_FILES['refImg'] !=" " && $_FILES['tamImg'] != ""){
       $badge1 = 'b';
       $badge2 = 'b';
@@ -147,8 +150,11 @@
       $badge2 = "a";
     }elseif($_FILES['refImg'] ==" " && $_FILES['tamImg'] != ""){
       $badge1 = "a";
-      $badge1 = 'b';
+      $badge2 = 'b';
     }
+
+    $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$_POST['pass']."',profImg='".$_FILES['profImg']['name']."',refImg='".$_FILES['refImg']['name']."',badge1='".$badge1."',tamImg='".$_FILES['tamImg']['name']."',badge2='".$badge2."' WHERE user_id='".$user['user_id']."'";
+
 
     if($dbCon->query($updateCmd) === true){
       $dbCon->close();

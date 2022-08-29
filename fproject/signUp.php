@@ -125,15 +125,13 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     $email = $_POST['email'];
     
     //should check img
-    $profdestDir = './img/profile_img';
-    $sourceFile = $_FILES['profImg'];
-    $sourceFileDetails = pathinfo($sourceFile['name']);
-    if($sourceFileDetails['extension']=="png" && getimagesize($sourceFile['tmp_name'])){
-        if($sourceFile['size']<400000){
-          $profImg = $_FILES['profImg']['name'];
-          $refImg = $_FILES['refImg']['name'];
-          $tamImg = $_FILES['tamImg']['name'];
-        }
+    $profdestDir = './img/profile_img/';
+    if(uploadfile($profdestDir,'profImg')==='true'){
+      $profImg = $_FILES['profImg']['name'];
+      $refImg = $_FILES['refImg']['name'];
+      $tamImg = $_FILES['tamImg']['name'];
+    }
+
     $_SESSION['timeout'] = time()+900;
     if($_POST['pass'] == $_POST['conPass']){
         $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
@@ -162,13 +160,6 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         echo "<h1>Succesfully</h1>"; //checkmark icon 
         $_SESSION['user'] = $email;
       
-
-        // $userCmd = "SELECT * FROM user_tb WHERE email=$email";
-        // $result = $dbCon->query($userCmd);
-        // // $_session['users'] has all info of login user
-        // $_SESSION['users'] = $result->fetch_assoc();
-        // print_r($_SESSION['users']);
-        // should write next page 
         if($atype == 'Admin'){
           $dbCon->close();
           header("Location: http://localhost/fproject/adminuser.php");// adminHP
@@ -182,7 +173,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
       $dbcon->close();
       } 
     }
-  }
+
 ?>
 
   </body>

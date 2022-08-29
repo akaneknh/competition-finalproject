@@ -29,7 +29,6 @@
   <link rel="stylesheet" href="./CSS/addNewPost.css">
 </head>
 <body>
-  <?php echo $post['title']; ?>
   <main>
     <!-- should change action -->
     <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">

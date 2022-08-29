@@ -7,17 +7,33 @@
     die("connection error");
   }
 
-  // if(!isset($_SESSION['user'])){
-  //   header("Location: http://localhost/fproject/loginCon.php"); //loginpage
-  // }else{
-  //   $user = $_SESSION['user'];
-  // }
+  if(!isset($_SESSION['user'])){
+    header("Location: http://localhost/fproject/login.php"); //loginpage
+  }else{
+    $email = $_SESSION['user'];
+    $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
+    $useresult = $dbCon->query($logCmd);
+    if($useresult->num_rows > 0){
+      $user = $useresult->fetch_assoc();
+    }
+  }
+
+  if(isset($_GET['user'])){
+    $deleteCmd = "DELETE FROM post_tb WHERE post_id ='".$_GET['user']."'";
+    if($dbCon->query($deleteCmd)===true){
+      header("Location: http://localhost/fproject/adminPost.php");
+    }
+    echo $dbCon->error;
+  }
 
   $postArray = [];
   $postCmd = "SELECT * FROM post_tb";
   $result = $dbCon->query($postCmd);
-  while($row = $result->fetch_assoc()){
-  array_push($postArray,$row);
+  if($result->num_rows > 0){
+    $postData = $result->fetch_assoc();
+    while($row = $result->fetch_assoc()){
+      array_push($postArray,$row);
+    }
   }
 
 ?>
@@ -32,70 +48,56 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
-  <link rel="stylesheet" href="./CSS/addNewPost.css">
+  <link rel="stylesheet" href="./CSS/yourpost.css">
 </head>
 <body>
-  <main>
-    <!-- should change action -->
-    <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
-      <label for="postImg">Image</label>
-        <article>
-          <label for="postImg">select your file<i class="fa-solid fa-file-arrow-up"></i></label>
-          <input type="file"  name="postImg" required>
-        </article>
-      <label for="title">Title</label>
-      <input type="text" name="title" required>
-      <label for="date">Date</label>
-      <input type="date" name="date" required>
-      <label for="content">Content</label>
-      <textarea name="content" required></textarea>
+<header>
+    <!-- LOGO -->
+      <div class="logo"><h1>WHS<i class="fa-solid fa-house"></i></h1><p>Wood Housing Solution</p></div>
 
-      <div>
-        <button type="submit">Save</button>
-      </div>
-    </form>
-  </main>
-  
-</body>
-</html>
-
-<?php
-print_r($postArray);
-  //should change file place
-    foreach($postArray as $post){
-      for($i=0;$i>5;$i++){  //just once
-        foreach($post as $filedname=>$postDetail){
-        print_r($postDetail);
-        echo '<article><div class="your-post-wrap">';
-        echo '<h1>'.$filedname.'</h1>';
-        }
-      }
-      echo '<img src="'.$post['imgName'].'">';
-      echo '<div class="your-post-article"><h4>'.$post['title'].'</h4><div><time>'.$post['p_date'].'</time><aside><a class="edit" href="http://localhost/fproject/yourpost.php?action=edit">Edit</a><a  class= "delete" href="./yourpost.php?action=delete">Delete</a></aside></div><p>'.$post['postContent'].'</p>';
-      //html changed span to a
-      echo '</div></div></article>';
-    } 
-  ?>
-  <a  class= "delete" href="./yourpost.php?action=delete">Delete</a>
-
+    <!-- NAV -->
+    <nav>
+      <ul>
+        <li><a href="#">Find Shared room/house</a></li>
+        <li><a href="#">Comunity</a></li>
+        <li><a href="#">Your Profile</a></li>
+      </ul>
+    </nav>
+    <!-- LOGIN USER NAME -->
+    <?php
+         echo '<aside>Hello,'.$user['firstName'].'</aside>';
+       ?>
+    <!-- SETTING -->
+    <a class="setting-icn" href="#"><i class="fa-solid fa-gear"></i></a>
+</header>
+<main>
+  <div class="side">
+      <ul>
+        <li><a href="./adminuser.php"><i class="fa-solid fa-file-lines"></i>User</a></li>
+        <li><a href="./adminPost.php"><i class="fa-solid fa-user"></i>Post</a></li>
+      </ul>
+  </div>
   <?php
-
-  $postCom = "SELECT * FROM post_tb";
-  $result = $dbCon->query($postCom);
-  if($result->num_rows > 0){
-    $postData = $result->fetch_assoc();
-    print_r($postData);
-
     echo "<table><thead><tr>";
     foreach($postData as $fieldName => $value){
       echo "<th>".$fieldName."</th>";
     }
-    echo "</tr><thead><tbody><tr>";
-    foreach($postData as $fieldName => $value){
-      echo "<td>".$value."</td>";
-      // how to edit delete depends on format of $postdata.if it's kinds of array using foreach, if it has index, use index to specify user
-      // echo "<td></td>";
+    echo "<th>Delete</th>";
+    echo "</tr><thead><tbody>";
+
+    foreach($postArray as $post){
+      echo "<tr>";
+      foreach($post as $postDetail){
+        echo "<th>".$postDetail."</th>";
+      }
+      echo "<td><a href='./adminPost.php?user=".$post['post_id']."'>Delete</a></td>";
     }
-    echo "<a href='./deleteEdit.php'>Delete</a></th></tbody></table>";
-  }
-?>
+      echo "</tr>";
+      echo "</tbody></table>";
+  ?>
+
+</main>
+<!-- FOOTER -->
+<footer>&copy; Wood housing solution</footer>
+</body>
+</html>

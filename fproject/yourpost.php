@@ -7,7 +7,6 @@
     die("connection error");
   }
 
-  // $_SESSION['user']=Array ( [user_id] => 4 ,[firstName] => haruka ,[lastName] => nakamura [atype] => Student [dob] => 2022-08-12 [email] => test@gmail.com [pass] => 123 [profImg] => [refImg] => [badge1] => 0 [tamImg] => [badge2] => 0 [profileContent] => no posted ) 
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/loginCon.php"); //loginpage
   }
