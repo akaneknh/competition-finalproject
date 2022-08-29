@@ -4,6 +4,13 @@ $dbSeverName = "localhost";
 $dbpass = "";
 $dbname = "final_db"; //dbname connects to specific 
 
+function specify($value){
+  if(!isset($value)){
+    header("Location: http://localhost/fproject/loginCon.php"); //loginpage
+  }else{
+    $user = $value;
+  }
+}
 
 
  //place should be like './files/img'

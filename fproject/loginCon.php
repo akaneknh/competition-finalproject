@@ -29,11 +29,11 @@ if($dbCon->connect_error){
             </h1>
         </article>
         <article>
-            <form method="POST" action="#">
+            <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <label for="title">Email</label>
                 <input type="email" name="email" placeholder="  example@woodhousing.com">
                 <label for="pass">Password</label>
-                <input type="text" name="pass">
+                <input type="password" name="pass">
                 <button type="submit">LogIn</button>
                 <a href="#">Create an account</a>
             </form>
@@ -50,19 +50,20 @@ if($dbCon->connect_error){
         if($result->num_rows > 0){
           $userDetails = $result->fetch_assoc();
           $hashpass = $userDetails['pass'];
-          if(password_verify($pass,$hashpass)){
-            $_SESSION['user'] = $userDetails;
+          // if(password_verify($pass,$hashpass)){ should check
+            $_SESSION['user'] = $username;
+  
             $dbCon->close();
             $_SESSION['timeout'] = time()+900;
-            if($userDetails['atype']=="admin"){
-              header("Location: "); //adminHP
-            }elseif($userDetails['atype']=="student" || $userDetails['atype']=="landlord"){ 
-              header("Locaiton: #");
+
+            if($userDetails['atype']=="Admin"){
+              header("Location: http://localhost/fproject/adminuser.php"); //adminHP
+            }elseif($userDetails['atype']=="Student" || $userDetails['atype']=="Landlord"){ 
+              header("Location: http://localhost/fproject/yourpost.php");
             }
-          }
-        }else{
-        echo 'invalid';
-        }
+          }else{
+            echo 'invalid';
+         }    
       }
     ?>
 </body>

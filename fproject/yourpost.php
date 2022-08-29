@@ -1,21 +1,61 @@
 <?php
   include './configfinal.php';
   session_start();
+
   $dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
   if($dbCon->connect_error){
     die("connection error");
   }
 
+  // $_SESSION['user']=Array ( [user_id] => 4 ,[firstName] => haruka ,[lastName] => nakamura [atype] => Student [dob] => 2022-08-12 [email] => test@gmail.com [pass] => 123 [profImg] => [refImg] => [badge1] => 0 [tamImg] => [badge2] => 0 [profileContent] => no posted ) 
   if(!isset($_SESSION['user'])){
-    header("Location: "); //loginpage
-  }else{
-    $user = $_SESSION['user'];
+    header("Location: http://localhost/fproject/loginCon.php"); //loginpage
   }
+    $email = $_SESSION['user'];
+    $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
+    $useresult = $dbCon->query($logCmd);
+    if($useresult->num_rows > 0){
+      $user = $useresult->fetch_assoc();
+    }
+
+    $postArray = [];
+    $userid = $user['user_id'];
+    $postCmd = "SELECT * FROM post_tb WHERE user_id = '$userid'";
+    $result = $dbCon->query($postCmd);
+    while($row = $result->fetch_assoc()){
+      array_push($postArray,$row);
+    }
+  
+
+
+  if(isset($_GET['action'])){
+    switch($_GET['action']){
+      case 'edit': 
+        //should change
+        $userid = $user['user_id'];
+        $editCmd = "SELECT * FROM post_tb WHERE user_id= '$userid'";
+        $result = $dbCon->query($editCmd);
+        $postData = $result->fetch_assoc();
+        $_SESSION['post_id']=$postData['post_id'];
+
+        header("Location: http://localhost/fproject/postEdit.php");//postedit
+      break;
+
+      case 'delete':
+        print_r($postDetail);
+        $deleteCmd = "DELETE FROM post_tb WHERE post_id = $postDetail[0]['title']";
+        $dbCon->query($deleteCmd);
+
+        header("Location: http://localhost/fproject/yourpost.php");
+      break;
+    }
+  }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
+  
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,7 +70,7 @@
     rel="stylesheet">
   <!-- CSS -->
   <link rel="stylesheet" href="./CSS/yourPost.css">
-  <title>Document</title>
+  <title>your post</title>
 </head>
 
 <body>
@@ -58,76 +98,34 @@
 
   <!-- DASHBOARD -->
   <main>
-
-
     <div class="side">
       <ul>
-        <li><a><i class="fa-solid fa-file-lines"></i>Your Post</a></li>
-        <li><a><i class="fa-solid fa-user"></i>Your Profile</a></li>
-        <li><a><i class="fa-solid fa-pen"></i>Add new post</a></li>
-        <li><a><i class="fa-solid fa-gear"></i>Accoutn setting</a></li>
+        <li><a href="./yourpost.php"><i class="fa-solid fa-file-lines"></i>Your Post</a></li>
+        <li><a href="./yourProfile.php"><i class="fa-solid fa-user"></i>Your Profile</a></li>
+        <li><a href="./addNewPost.php"><i class="fa-solid fa-pen"></i>Add new post</a></li>
+        <li><a href="./accountSetting.php"><i class="fa-solid fa-gear"></i>Accoutn setting</a></li>
       </ul>
 
     </div>
     <div class="content">
-      <article>
-        <div class="your-post-wrap">
-          <img src="/img/house.png" alt="">
-          <div class="your-post-article">
-            <h4> Ipsum, dolor sit amet consectetur</h4>
-            <div>
-              <time>April 18, 2022</time>
-              <aside><span class="edit">Edit</span><span class="delete">Delete</span></aside>
-            </div>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illo, voluptate provident odit voluptas culpavelit sunt
-            </p>
-          </div>
-        </div>
-    
-      </article>
-      <article>
-        <div class="your-post-wrap">
-          <img src="/img/house.png" alt="">
-          <div class="your-post-article">
-            <h4> Ipsum, dolor sit amet consectetur</h4>
-            <div>
-              <time>April 18, 2022</time>
-              <aside><span class="edit">Edit</span><span class="delete">Delete</span></aside>
-            </div>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illo, voluptate provident odit voluptas culpavelit sunt
-            </p>
-          </div>
-        </div>
-    
-      </article>
-      <article>
-        <div class="your-post-wrap">
-          <img src="/img/house.png" alt="">
-          <div class="your-post-article">
-            <h4> Ipsum, dolor sit amet consectetur</h4>
-            <div>
-              <time>April 18, 2022</time>
-              <aside><span class="edit">Edit</span><span class="delete">Delete</span></aside>
-            </div>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illo, voluptate provident odit voluptas culpavelit sunt
-            </p>
-          </div>
-        </div>
-    
-      </article>
-    </div>
+  <?php
+  //should change file place
+    foreach($postArray as $postDetail){
+      echo '<article><div class="your-post-wrap">';
+      echo '<img src="./img/'.$postDetail['imgName'].'">';
+      echo '<div class="your-post-article"><h4>'.$postDetail['title'].'</h4><div><time>'.$postDetail['p_date'].'</time><aside><a class="edit" href="http://localhost/fproject/yourpost.php?action=edit">Edit</a><a  class= "delete" href="./yourpost.php?action=delete">Delete</a></aside></div><p>'.$postDetail['postContent'].'</p>';
+      //html changed span to a
+      echo '</div></div></article>';
+    } 
+  ?>
+      <a  class= "delete" href="./yourpost.php?action=delete">Delete</a>
 
-
+    </div>  
   </main>
 
   <!-- FOOTER -->
   <footer>&copy; Wood housing solution</footer>
 
+
 </body>
-
 </html>
-
-<?php
-  echo "you haven't eny posted yet";
-  $postCon = "SELECT "
-?>

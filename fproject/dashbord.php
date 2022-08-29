@@ -4,8 +4,6 @@ include './configfinal.php';
 session_start();
 
 if(isset($_GET('action'))){
-  session_unset();
-  session_destroy();
 
   switch($_GET('action')){
     case 'yourpost':

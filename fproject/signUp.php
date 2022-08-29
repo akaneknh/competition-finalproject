@@ -55,7 +55,7 @@
   <main>
     <h1>Sign up</h1>
     <!-- should change inside of action -->
-    <form method="POST" action="#" enctype="multipart/form-data">
+    <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
       <h5>
         <div>*</div>is required
       </h5>
@@ -124,13 +124,19 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     $dob = $_POST['dob']; 
     $email = $_POST['email'];
     
-    $profImg = $_FILES['profImg']['name'];
-    $refImg = $_FILES['refImg']['name'];
-    $tamImg = $_FILES['tamImg']['name'];
-    
+    //should check img
+    $profdestDir = './img/profile_img';
+    $sourceFile = $_FILES['profImg'];
+    $sourceFileDetails = pathinfo($sourceFile['name']);
+    if($sourceFileDetails['extension']=="png" && getimagesize($sourceFile['tmp_name'])){
+        if($sourceFile['size']<400000){
+          $profImg = $_FILES['profImg']['name'];
+          $refImg = $_FILES['refImg']['name'];
+          $tamImg = $_FILES['tamImg']['name'];
+        }
     $_SESSION['timeout'] = time()+900;
     if($_POST['pass'] == $_POST['conPass']){
-        $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT); 
+        $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
         // I hash pass here,is it correct?or after like when you store value
       }else{
         echo 'password confirmation is not valid';
@@ -153,29 +159,31 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
       
       $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
       if($dbCon->query($insertCmd)){
-        echo ">Succesfully</h1>"; //checkmark icon 
-
+        echo "<h1>Succesfully</h1>"; //checkmark icon 
         $_SESSION['user'] = $email;
+      
 
-        $userCmd = "SELECT * FROM user_tb WHERE fname=$fname";
-        $result = $dbCon->query($userCmd);
-        // $_session['user'] has all info of login user
-        $_SESSION['user'] = $result->fetch_assoc();
-        print_r($_SESSION['user']);
-        if($atype == 'admin'){
+        // $userCmd = "SELECT * FROM user_tb WHERE email=$email";
+        // $result = $dbCon->query($userCmd);
+        // // $_session['users'] has all info of login user
+        // $_SESSION['users'] = $result->fetch_assoc();
+        // print_r($_SESSION['users']);
+        // should write next page 
+        if($atype == 'Admin'){
           $dbCon->close();
-          // header("Location: #");// adminHP
+          header("Location: http://localhost/fproject/adminuser.php");// adminHP
         }else{
           $dbCon->close();
-          // header("Location: #"); //userHp
+          header("Location: http://localhost/fproject/yourpost.php"); //userHp
         }
       }else{
         echo "<h1>database error</h1>";
       }
       $dbcon->close();
-    } 
-}
-  ?>
+      } 
+    }
+  }
+?>
+
   </body>
-  
   </html>
