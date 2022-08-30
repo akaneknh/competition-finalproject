@@ -270,7 +270,7 @@ label{
 article {
   display: flex;
   column-gap: 4vh;
-  width: 100%;
+  width: 80%;
 }
 
 article > label {

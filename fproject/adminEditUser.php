@@ -1,31 +1,115 @@
 <?php
 include './configfinal.php';
-session_start();
-$dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
+$dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
 if($dbCon->connect_error){
   die("connection error");
 }
 
- //get action isset
-//delete
-?>
+if(isset($_SESSION['admin'])){
+  $adminid = $_SESSION['admin'];
+  $logCmd = "SELECT * FROM user_tb WHERE user_id='$adminid'";
+  $useresult = $dbCon->query($logCmd);
+  if($useresult->num_rows > 0){
+    $user = $useresult->fetch_assoc();
+  }
+}
 
-<?php
-  //echo $_SESSION['user'] as form
-
-  if($_SERVER['REQUEST_METHOD']=='POST' ){// check order and edit
-    $id = $_SESSION['user']['user_id'];
-
-    $editCon = "UPDATE user_tb SET firstName='".$_POST['fame']."', lastName='".$_POST['lname']."', email='".$_POST['email']."', pass='".$_POST['pass']."', dob='".$_POST['dob']."', phone='".$_POST['phone']."', addr='".$_POST['addr']."', title='".$_POST['title']."' WHERE user_id ='".$id."';";
-    // check the format
-    if($dbcon->query($editCmd) === true){
-      header("adminhp");
-    }else{
-      echo 'Failed';
+$userid = $_SESSION['user'];
+$userArray = [];
+  $postCmd = "SELECT user_id, firstName, lastName, atype, dob, email, profImg, refImg, badge1, tamImg, badge2, profileContent FROM user_tb ";
+  $result = $dbCon->query($postCmd);
+  if($result->num_rows > 0){
+    $userData = $result->fetch_assoc();
+    while($row = $result->fetch_assoc()){
+      array_push($userArray,$row);
     }
-    $dbcon->close();
-    unset($_SESSION['user']);
-    header("Location: adminhp");
   }
 
+ //get action isset
+//delete
+if($_SERVER['REQUEST_METHOD']=='POST'){
+
+  $updateCmd = "UPDATE user_tb SET  badge1='".$_POST['badge1']."', badge2='".$_POST['badge2']."' WHERE user_id='".$userid."'";
+  if($dbCon->query($updateCmd) === true){
+    $_SESSION['user']= $user['email'];
+    header("Location:http://localhost/fproject/adminuser.php");
+  }else{
+    echo $dbCon->error;
+  }
+
+  // $dbcon->close();
+  // unset($_SESSION['user']);
+  // header("Location: http://localhost/fproject/adminuser.php");
+}
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>adminuser</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <link rel="stylesheet" href="./CSS/yourpost.css">
+</head>
+<body>
+
+<?php
+  echo "<table><thead><tr>";
+    foreach($userData as $fieldName => $value){
+      switch($fieldName){
+        case 'atype' :
+          echo "<th>Account type</th>";
+        break;
+        case 'dob' :
+          echo '<th>Date of birth</th>';
+        break;
+        default:
+        echo "<th>".$fieldName."</th>";
+      }
+    }
+    echo "<th>Save</th>";
+    echo "</tr><thead><tbody>";
+
+    foreach($userArray as $user){
+      echo "<tr>";
+      foreach($user as $field=>$userDetail){
+        if($user['user_id'] == $userid){
+          switch($field){
+            case 'badge1':
+              echo '<td><form method="POST" action="#"><select name="badge1"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
+            break;
+            case 'badge2' :
+              echo '<td><form method="POST" action="#"><select name="badge2"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
+            break;
+            default :
+            echo "<td>".$userDetail."</td>";   
+          }
+        }else{
+          echo "<td>".$userDetail."</td>";
+        }
+      }
+
+      if($user['user_id'] == $userid){
+      echo "<td><button type='submit'>Updated</button></form></td>";
+      }else{
+        echo "<td></td>";
+        //other place, how to design
+      }
+    }
+      echo "</tr>";
+      echo "</tbody></table>";
+
+  ?>
+
+
+</body>
+</html>
+
+<!-- echo '<td><form method="POST" action="echo "'.$_SERVER['PHP_SELF'].'"><select name="badge1"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
+            break;
+            case 'badge2' :
+              echo '<td><form method="POST" action="echo "'.$_SERVER['PHP_SELF'].'"><select name="badge2"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>'; -->

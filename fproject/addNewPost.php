@@ -1,13 +1,12 @@
 <?php
   include './configfinal.php';
-  session_start();
-  $dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
+  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
   if($dbCon->connect_error){
     die("connection error");
   }
 
   if(!isset($_SESSION['user'])){
-    header("Location: http://localhost/fproject/login.php"); //loginpage
+    header("Location: http://localhost/fproject/loginCon.php"); //loginpage
   }else{
     $email = $_SESSION['user'];
     $logCmd = "SELECT * FROM user_tb WHERE email='$email'";

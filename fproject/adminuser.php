@@ -1,13 +1,13 @@
 <?php
   include './configfinal.php';
-  session_start();
-  $dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
+
+  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
   if($dbCon->connect_error){
     die("connection error");
   }
-
+//$_SESSION['user'] always has user email, and $_SESSION['admin'] is user_id
   if(!isset($_SESSION['user'])){
-    header("Location: http://localhost/fproject/login.php"); //loginpage
+    header("Location: http://localhost/fproject/loginCon.php"); //loginpage
   }else{
     $email = $_SESSION['user'];
     $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
@@ -17,14 +17,16 @@
     }
   }
 
+  
   if(isset($_GET['user'])){ 
     $_SESSION['user']= $_GET['user'];
     $dbCon->close();
-    header("Location: http://localhost/fproject/adminEditUser.php");// change url
+    $_SESSION['admin'] = $user['user_id'];
+    header("Location: http://localhost/fproject/adminEditUser.php");
   }
 
   $userArray = [];
-  $postCmd = "SELECT user_id, firstName, lastName, atype, dob, email, profImg, refImg, tamImg,  profileContent FROM user_tb";
+  $postCmd = "SELECT user_id, firstName, lastName, atype, dob, email, profImg, refImg, badge1, tamImg, badge2, profileContent FROM user_tb";
   $result = $dbCon->query($postCmd);
   if($result->num_rows > 0){
     $userData = $result->fetch_assoc();
@@ -89,7 +91,7 @@
       foreach($user as $userDetail){
           echo "<th>".$userDetail."</th>";
       }
-      echo "<td><a href='./adminPost.php?user=".$user['user_id']."'>Edit</a></td>";
+      echo "<td><a href='./adminuser.php?user=".$user['user_id']."'>Edit</a></td>";
     }
       echo "</tr>";
       echo "</tbody></table>";
@@ -98,6 +100,5 @@
 <!-- FOOTER -->
 <footer>&copy; Wood housing solution</footer>
 
-  
 </body>
 </html>

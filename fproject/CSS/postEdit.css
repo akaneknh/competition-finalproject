@@ -1,0 +1,90 @@
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.postedit{
+  /* main */
+  display: flex;
+}
+
+/* postedit-user */
+
+.postedit img {
+  width: 50%;
+  height: 20vh;
+}
+
+.postedit > form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1vh;
+}
+
+.postedit input {
+  border-radius: 5px;
+  border:1px solid #8888;
+  height: 5vh;
+  color: #333333;
+  margin-bottom: 5vh;
+  width: 100%;
+}
+
+.postedit button {
+  border-radius: 25px;
+  background-color: #4EA1A5
+  ;
+  border: 1px solid #4EA1A5;
+  color: white;
+  height: 5vh;
+  width: 30%;
+  margin-top: 5vh;
+}
+
+.postedit textarea {
+  border-radius: 5px;
+  height: 15vh;
+  width: 100%;
+  border:1px solid #8888;
+}
+
+.postedit label{
+  display: flex;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.postedit article {
+  display: flex;
+  column-gap: 2vh;
+  height: 8vh;
+}
+
+.postedit article > label {
+  color: #4EA1A5;
+  display: flex;
+  column-gap: 2vh;
+  width: fit-content;
+}
+
+.postedit [type=file] {
+  color: white;
+  border:1px solid white;
+  width: 30%;
+  height: fit-content;
+}
+
+.postedit [for="postImg"]{
+  height: 5vh;
+}
+
+.postedit .button{
+  display: flex;
+  justify-content: center;
+}

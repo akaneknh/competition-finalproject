@@ -1,7 +1,7 @@
 <?php
   include './configfinal.php';
-  session_start();
-  $dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
+  
+  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
   if($dbCon->connect_error){
     die("connection error");
   }
@@ -73,7 +73,7 @@
   <?php
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
-  if(uploadfile('./img/profile_img','profImg')==='true'){
+  if(uploadfile('./img/profile_img/','profImg')==='true'){
     $profImg = $_FILES['profImg']['name'];
     $content = htmlspecialchars($_POST['content'], ENT_QUOTES);
   }

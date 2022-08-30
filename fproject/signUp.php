@@ -1,8 +1,8 @@
 <!-- add two hidden forms,1's value badge1 +3 default: a:edit -->
 <?php
   include './configfinal.php';
-  session_start();
-  $dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
+
+  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
   if($dbCon->connect_error){
     die("connection error");
   }
@@ -135,24 +135,21 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     $_SESSION['timeout'] = time()+900;
     if($_POST['pass'] == $_POST['conPass']){
         $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
-        // I hash pass here,is it correct?or after like when you store value
       }else{
         echo 'password confirmation is not valid';
       }
       
       // to check if there are values in $refImg & $tamImg to give user badge
-      if($refImg !=" " && $tamImg != ""){
-        //user can get 2 pending badge(value=b)
-        $badge1 = 'b';
-        $badge2 = 'b';
-      }elseif($refImg !=" " && $tamImg == ""){
-        //user can get 1 panding badge(value=b)
-        $badge1 = 'b';
-        $badge2 = "a";
-      }elseif($refImg ==" " && $tamImg != ""){
-        //user can get 1 panding badge(value=b)
-        $badge1 = "a";
-        $badge1 = 'b';
+      //
+      if(isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
+        $badge1 = 'waiting';
+        $badge2 = 'waiting';
+      }elseif(isset($_FILES['refImg']) && !isset($_FILES['tamImg'])){
+        $badge1 = 'waiting';
+        $badge2 = "unsubmitted";
+      }elseif(!isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
+        $badge1 = "unsubmitted";
+        $badge2 = 'waiting';
       }
       
       $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 

@@ -1,12 +1,10 @@
 <?php
   include './configfinal.php';
-  session_start();
 
-  $dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
-  if($dbCon->connect_error){
-    die("connection error");
-  }
-
+  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
+if($dbCon->connect_error){
+  die("connection error");
+}
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/loginCon.php"); //loginpage
   }
@@ -27,25 +25,26 @@
   
 
 
+    //should change
   if(isset($_GET['action'])){
+    $userid = $user['user_id'];
+    $editCmd = "SELECT * FROM post_tb WHERE user_id= '$userid'";
+    $result = $dbCon->query($editCmd);
+    $postData = $result->fetch_assoc();
+    $_SESSION['post_id']=$postData['post_id'];
+
     switch($_GET['action']){
       case 'edit': 
-        //should change
-        $userid = $user['user_id'];
-        $editCmd = "SELECT * FROM post_tb WHERE user_id= '$userid'";
-        $result = $dbCon->query($editCmd);
-        $postData = $result->fetch_assoc();
-        $_SESSION['post_id']=$postData['post_id'];
-
-        header("Location: http://localhost/fproject/postEdit.php");//postedit
+        header("Location: http://localhost/fproject/postEdit.php");
       break;
 
       case 'delete':
-        print_r($postDetail);
-        $deleteCmd = "DELETE FROM post_tb WHERE post_id = $postDetail[0]['title']";
-        $dbCon->query($deleteCmd);
-
-        header("Location: http://localhost/fproject/yourpost.php");
+        $postid = $postData['post_id'];
+        $deleteCmd = "DELETE FROM post_tb WHERE post_id = '$postid'";
+        if($dbCon->query($deleteCmd)===true){
+          header("Location: http://localhost/fproject/yourpost.php");
+        }
+        echo $dbCon->error;
       break;
     }
   }
@@ -108,16 +107,14 @@
     </div>
     <div class="content">
   <?php
-  //should change file place
-    foreach($postArray as $postDetail){
+      foreach($postArray as $postDetail){
       echo '<article><div class="your-post-wrap">';
-      echo '<img src="./img/'.$postDetail['imgName'].'">';
-      echo '<div class="your-post-article"><h4>'.$postDetail['title'].'</h4><div><time>'.$postDetail['p_date'].'</time><aside><a class="edit" href="http://localhost/fproject/yourpost.php?action=edit">Edit</a><a  class= "delete" href="./yourpost.php?action=delete">Delete</a></aside></div><p>'.$postDetail['postContent'].'</p>';
+      echo '<img src="./img/post_img/'.$postDetail['imgName'].'">';
+      echo '<div class="your-post-article"><h4>'.$postDetail['title'].'</h4><div><time>'.$postDetail['p_date'].'</time><aside><a class="edit" href="http://localhost/fproject/yourpost.php?action=edit">Edit</a><a class= "delete" href="http://localhost/fproject/yourpost.php?action=delete">Delete</a></aside></div><p>'.$postDetail['postContent'].'</p>';
       //html changed span to a
       echo '</div></div></article>';
     } 
   ?>
-      <a  class= "delete" href="./yourpost.php?action=delete">Delete</a>
 
     </div>  
   </main>

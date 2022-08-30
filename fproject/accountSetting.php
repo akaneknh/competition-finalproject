@@ -1,7 +1,6 @@
 <?php
   include './configfinal.php';
-  session_start();
-  $dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
+  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
   if($dbCon->connect_error){
     die("connection error");
   }
@@ -70,7 +69,7 @@
       </div> 
       <div class="content">
   <!-- should change inside of action -->
-  <form method="POST" action="#" enctype="multipart/form-data">
+  <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
     <h5><div>*</div>is required</h5>
     <section class="name">
       <aside>
@@ -118,13 +117,13 @@
       <label for="refImg">References(email confirmed)</label>
       <article>
       <?php
-         echo '<input type="file" name="refImg" value="'.$user['refImg'].'">';
+         echo '<input type="file" name="refImg">';
        ?>
       </article>
       <label for="tamImg">References(from Tamwood)</label>
       <article>
       <?php
-         echo '<input type="file" name="tamImg" value="'.$user['tamImg'].'">';
+         echo '<input type="file" name="tamImg">';
        ?>
       </article>
     </section>
@@ -142,19 +141,23 @@
 
 <?php 
   if($_SERVER['REQUEST_METHOD']=='POST'){// check order and edit
-    if($_FILES['refImg'] !=" " && $_FILES['tamImg'] != ""){
-      $badge1 = 'b';
-      $badge2 = 'b';
-    }elseif($_FILES['refImg'] !=" " && $_FILES['tamImg'] == ""){
-      $badge1 = 'b';
-      $badge2 = "a";
-    }elseif($_FILES['refImg'] ==" " && $_FILES['tamImg'] != ""){
-      $badge1 = "a";
-      $badge2 = 'b';
+    if(isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
+      $badge1 = 'waiting';
+      $badge2 = 'waiting';
+    }elseif(isset($_FILES['refImg']) && !isset($_FILES['tamImg'])){
+      $badge1 = 'waiting';
+      $badge2 = "unsubmitted";
+    }elseif(!isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
+      $badge1 = "unsubmitted";
+      $badge2 = 'waiting';
     }
+    // $badge = badge_check('refImg','tamImg');
+    // $badge1 = $badge[0];
+    // $badge2 = $badge[1];
 
-    $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$_POST['pass']."',profImg='".$_FILES['profImg']['name']."',refImg='".$_FILES['refImg']['name']."',badge1='".$badge1."',tamImg='".$_FILES['tamImg']['name']."',badge2='".$badge2."' WHERE user_id='".$user['user_id']."'";
+    $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]);
 
+    $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$pass."',profImg='".$_FILES['profImg']['name']."',refImg='".$_FILES['refImg']['name']."',badge1='".$badge1."',tamImg='".$_FILES['tamImg']['name']."',badge2='".$badge2."' WHERE user_id='".$user['user_id']."'";
 
     if($dbCon->query($updateCmd) === true){
       $dbCon->close();

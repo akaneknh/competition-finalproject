@@ -1,7 +1,7 @@
 <?php
 include './configfinal.php';
-session_start();
-$dbCon = new mysqli($dbSeverName,$dbUserName,$dbpass,$dbname);
+
+$dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
 if($dbCon->connect_error){
   die("connection error");
 }
@@ -50,7 +50,7 @@ if($dbCon->connect_error){
         if($result->num_rows > 0){
           $userDetails = $result->fetch_assoc();
           $hashpass = $userDetails['pass'];
-          // if(password_verify($pass,$hashpass)){ should check
+          if(password_verify($pass,$hashpass)){
             $_SESSION['user'] = $username;
   
             $dbCon->close();
@@ -63,7 +63,8 @@ if($dbCon->connect_error){
             }
           }else{
             echo 'invalid';
-         }    
+         }
+        }    
       }
     ?>
 </body>
