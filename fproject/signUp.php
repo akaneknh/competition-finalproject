@@ -130,6 +130,9 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
       $profImg = $_FILES['profImg']['name'];
       $refImg = $_FILES['refImg']['name'];
       $tamImg = $_FILES['tamImg']['name'];
+
+      print_r($refImg);
+      print_r($tamImg);
     }
 
     $_SESSION['timeout'] = time()+900;
@@ -141,14 +144,14 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
       
       // to check if there are values in $refImg & $tamImg to give user badge
       //
-      if(isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
+      if(isset($_FILES['refImg']['name']) && isset($_FILES['tamImg']['name'])){
         $badge1 = 'waiting';
         $badge2 = 'waiting';
-      }elseif(isset($_FILES['refImg']) && !isset($_FILES['tamImg'])){
+      }elseif(isset($_FILES['refImg']['name']) && !isset($_FILES['tamImg']['name'])){
         $badge1 = 'waiting';
-        $badge2 = "unsubmitted";
-      }elseif(!isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
-        $badge1 = "unsubmitted";
+        $badge2 = 'unsubmitted';
+      }elseif(!isset($_FILES['refImg']['name']) && isset($_FILES['tamImg']['name'])){
+        $badge1 = 'unsubmitted';
         $badge2 = 'waiting';
       }
       
@@ -167,7 +170,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
       }else{
         echo "<h1>database error</h1>";
       }
-      $dbcon->close();
+      $dbCon->close();
       } 
     }
 

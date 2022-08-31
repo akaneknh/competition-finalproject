@@ -17,11 +17,13 @@
     }
   }
 
-  
+  //
   if(isset($_GET['user'])){ 
-    $_SESSION['user']= $_GET['user'];
+    $_SESSION['user']=$user['email'];
+    $_SESSION['admin']= $_GET['user'];//
     $dbCon->close();
-    $_SESSION['admin'] = $user['user_id'];
+    print_r($_SESSION['user']); //akane
+    print_r($_SESSION['admin']); //16
     header("Location: http://localhost/fproject/adminEditUser.php");
   }
 

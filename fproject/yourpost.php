@@ -22,10 +22,8 @@ if($dbCon->connect_error){
     while($row = $result->fetch_assoc()){
       array_push($postArray,$row);
     }
-  
 
 
-    //should change
   if(isset($_GET['action'])){
     $userid = $user['user_id'];
     $editCmd = "SELECT * FROM post_tb WHERE user_id= '$userid'";
@@ -107,13 +105,18 @@ if($dbCon->connect_error){
     </div>
     <div class="content">
   <?php
-      foreach($postArray as $postDetail){
-      echo '<article><div class="your-post-wrap">';
-      echo '<img src="./img/post_img/'.$postDetail['imgName'].'">';
-      echo '<div class="your-post-article"><h4>'.$postDetail['title'].'</h4><div><time>'.$postDetail['p_date'].'</time><aside><a class="edit" href="http://localhost/fproject/yourpost.php?action=edit">Edit</a><a class= "delete" href="http://localhost/fproject/yourpost.php?action=delete">Delete</a></aside></div><p>'.$postDetail['postContent'].'</p>';
-      //html changed span to a
-      echo '</div></div></article>';
-    } 
+  
+      if(!empty($postArray)){ // to check if the array is empty or not
+        foreach($postArray as $postDetail){
+          echo '<article><div class="your-post-wrap">';
+          echo '<img src="./img/post_img/'.$postDetail['imgName'].'">';
+          echo '<div class="your-post-article"><h4>'.$postDetail['title'].'</h4><div><time>'.$postDetail['p_date'].'</time><aside><a class="edit" href="http://localhost/fproject/yourpost.php?action=edit">Edit</a><a class= "delete" href="http://localhost/fproject/yourpost.php?action=delete">Delete</a></aside></div><p>'.$postDetail['postContent'].'</p>';
+          echo '</div></div></article>';
+        }
+      }else{
+        echo " <h1>you haven't posted yet</h1>";
+      }
+    
   ?>
 
     </div>  

@@ -5,17 +5,17 @@ if($dbCon->connect_error){
   die("connection error");
 }
 
-if(isset($_SESSION['admin'])){
-  $adminid = $_SESSION['admin'];
-  $logCmd = "SELECT * FROM user_tb WHERE user_id='$adminid'";
+if(isset($_SESSION['user'])){ 
+  $useremail = $_SESSION['user'];
+  $logCmd = "SELECT * FROM user_tb WHERE email='$useremail'";
   $useresult = $dbCon->query($logCmd);
   if($useresult->num_rows > 0){
-    $user = $useresult->fetch_assoc();
+    $userdetail = $useresult->fetch_assoc(); 
+    // $userdetail is about admin
   }
 }
 
-$userid = $_SESSION['user'];
-$userArray = [];
+  $userArray = [];
   $postCmd = "SELECT user_id, firstName, lastName, atype, dob, email, profImg, refImg, badge1, tamImg, badge2, profileContent FROM user_tb ";
   $result = $dbCon->query($postCmd);
   if($result->num_rows > 0){
@@ -27,11 +27,12 @@ $userArray = [];
 
  //get action isset
 //delete
+$id = $_SESSION['admin']; 
 if($_SERVER['REQUEST_METHOD']=='POST'){
-
-  $updateCmd = "UPDATE user_tb SET  badge1='".$_POST['badge1']."', badge2='".$_POST['badge2']."' WHERE user_id='".$userid."'";
+  $updateCmd = "UPDATE user_tb SET  badge1='".$_POST['badge1']."', badge2='".$_POST['badge2']."' WHERE user_id='".$id."'";
   if($dbCon->query($updateCmd) === true){
-    $_SESSION['user']= $user['email'];
+    $_SESSION['user']= $useremail;
+    // print_r($useremail);
     header("Location:http://localhost/fproject/adminuser.php");
   }else{
     echo $dbCon->error;
@@ -77,7 +78,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     foreach($userArray as $user){
       echo "<tr>";
       foreach($user as $field=>$userDetail){
-        if($user['user_id'] == $userid){
+        if($user['user_id'] == $id){
           switch($field){
             case 'badge1':
               echo '<td><form method="POST" action="#"><select name="badge1"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
@@ -93,7 +94,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         }
       }
 
-      if($user['user_id'] == $userid){
+      if($user['user_id'] == $id){
       echo "<td><button type='submit'>Updated</button></form></td>";
       }else{
         echo "<td></td>";
@@ -102,7 +103,6 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     }
       echo "</tr>";
       echo "</tbody></table>";
-
   ?>
 
 

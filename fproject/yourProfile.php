@@ -53,6 +53,7 @@
   </header>
     <main>
         <form method="POST" action="#" enctype="multipart/form-data">
+            <?php echo '<img src="./img/profile_img/'.$user['profImg'].'">';?>
             <label for="profImg">Profile image</label>
               <article>
                 <label for="profImg">select your file<i class="fa-solid fa-file-arrow-up"></i></label>

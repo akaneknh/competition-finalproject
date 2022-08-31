@@ -26,4 +26,7 @@
   if(!$pageCompo){
     $pageCompo = "./pages/404.php";
   }
+
+
+  //session cannot pass object in php, so we should use serialize and unserialize before page to page
 ?>
