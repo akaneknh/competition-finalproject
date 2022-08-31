@@ -1,11 +1,6 @@
 <?php
 include './configfinal.php';
 
-$dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-if($dbCon->connect_error){
-  die("connection error");
-}
-
 ?>
 
 <!DOCTYPE html>

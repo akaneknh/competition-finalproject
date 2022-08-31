@@ -1,10 +1,6 @@
 <?php
   include './configfinal.php';
-
-  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-if($dbCon->connect_error){
-  die("connection error");
-}
+  
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/loginCon.php"); //loginpage
   }
@@ -38,7 +34,13 @@ if($dbCon->connect_error){
 
       case 'delete':
         $postid = $postData['post_id'];
+        $selectCmd = "SELECT * FROM post_tb WHERE post_id = '$postid'";
+        $delresult = $dbCon->query($selectCmd);
+        $delimg = $delresult->fetch_assoc();
+        unlink("./img/post_id/".$delimg['imgName']);
+        
         $deleteCmd = "DELETE FROM post_tb WHERE post_id = '$postid'";
+
         if($dbCon->query($deleteCmd)===true){
           header("Location: http://localhost/fproject/yourpost.php");
         }

@@ -4,6 +4,10 @@ $dbServerName = "localhost";
 $dbpass = "";
 $dbname = "final_db"; //dbname connects to specific 
 session_start();
+$dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
+  if($dbCon->connect_error){
+    die("connection error");
+  }
 
 function specify($value){
   if(!isset($value)){
@@ -29,12 +33,24 @@ function specify($value){
         }
       }
   }
+  //check milad
+
+  function file_size($name){
+    $sourceFile =$_FILES[$name];
+    if($sourceFile['size'] > 0){
+      return $sourceFile['size'];
+      return true;
+    }else{
+      return true;
+    }
+
+  }
 
   //should think
-  function badge_check($name,$name2){
+  function badge_check($name1,$name2){
     $badge1 =" ";
     $badge2 =" ";
-    if(isset($_FILES['$name']) && isset($_FILES['$name2'])){
+    if( file_size($name1) && file_size($name2)){
       $badge1 = 'waiting';
       $badge2 = 'waiting';
     }elseif(isset($_FILES['$name']) && !isset($_FILES['$name2'])){
@@ -47,43 +63,6 @@ function specify($value){
 
     return ['$badge1', '$badge2'];
   }
-
-
-
-
-    // function Connect(){
-
-
-
-      //     $dbUserName = "root";
-//     $dbServerName = "localhost";
-//     $dbpass = "";
-//     $dbname = "final_db";
-//     $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-//     if($dbCon->connect_error){
-//       die('connection error');
-//       return 'false';
-//     }else{
-//       return $dbCon;
-//     }
-//   }
-  
-//   function find_userName($tableName,$userName,$fieldname){
-//     $dbCon = db_connect();
-//     if($dbCon !== false){
-//       $selectCmd = "SELECT * FROM $tableName WHERE $fieldname = '$userName'";
-//       $result = $dbCon->query($selectCmd);
-//       if($result->num_rows() > 0){
-//         $user = $result->fetch_assoc();
-//         $dbCon->close();
-//         return $user;
-//       }else{
-//         $dbCon->close();
-//         return false;
-//       }
-
-//     }
-//   }
 
   function sanitize($value){
     $value = trim($value);

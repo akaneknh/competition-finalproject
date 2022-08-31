@@ -1,10 +1,6 @@
 <?php
   include './configfinal.php';
 
-  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-  if($dbCon->connect_error){
-    die("connection error");
-  }
 //$_SESSION['user'] always has user email, and $_SESSION['admin'] is user_id
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/loginCon.php"); //loginpage

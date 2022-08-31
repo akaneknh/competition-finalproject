@@ -1,9 +1,5 @@
 <?php
   include './configfinal.php';
-  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-  if($dbCon->connect_error){
-    die("connection error");
-  }
 
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/login.php"); //loginpage
@@ -110,7 +106,7 @@
       <article>
 
       <?php
-         echo '<input type="file" name="profImg" value="'.$user['profImg'].'">';
+         echo '<input type="file" name="profImg" >';
        ?>
       </article>
       
@@ -140,30 +136,37 @@
 <footer>&copy; Wood housing solution</footer>
 
 <?php 
-  if($_SERVER['REQUEST_METHOD']=='POST'){// check order and edit
-    if(isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
-      $badge1 = 'waiting';
-      $badge2 = 'waiting';
-    }elseif(isset($_FILES['refImg']) && !isset($_FILES['tamImg'])){
-      $badge1 = 'waiting';
-      $badge2 = "unsubmitted";
-    }elseif(!isset($_FILES['refImg']) && isset($_FILES['tamImg'])){
-      $badge1 = "unsubmitted";
-      $badge2 = 'waiting';
+  if($_SERVER['REQUEST_METHOD']=='POST'){
+
+    if(uploadfile('./img/profile_img/','profImg')==='true' && (uploadfile('./img/ref_img/','refImg')==='true' && uploadfile('./img/tam_img/','tamImg')==='true')){
+      unlink("./img/profile_img/".$user['profImg']);
+      $profImg = $_FILES['profImg']['name'];
+      $refImg = $_FILES['refImg']['name'];
+      $tamImg = $_FILES['tamImg']['name'];
     }
-    // $badge = badge_check('refImg','tamImg');
-    // $badge1 = $badge[0];
-    // $badge2 = $badge[1];
-
-    $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]);
-
-    $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$pass."',profImg='".$_FILES['profImg']['name']."',refImg='".$_FILES['refImg']['name']."',badge1='".$badge1."',tamImg='".$_FILES['tamImg']['name']."',badge2='".$badge2."' WHERE user_id='".$user['user_id']."'";
-
-    if($dbCon->query($updateCmd) === true){
-      $dbCon->close();
-      echo "<h5>saved<h5>"; 
-    }else{
-      echo "failed";
+    if(file_size('refImg') == true && file_size('tamImg') == true){
+      $badge1 = 'waiting';
+      $badge2 = 'waiting';
+    }elseif(file_size('refImg') == true && file_size('tamImg') != true){
+      unlink("./img/ref_img/".$user['refImg']);
+      $badge1 = 'waiting';
+      $badge2 = 'unsubmitted';
+    }elseif(file_size('refImg') != true && file_size('tamImg') == true){
+      unlink("./img/profile_img/".$user['profImg']);
+      $badge1 = 'waiting';
+      $badge2 = 'unsubmitted';
+    }
+    
+    if(password_verify($_POST['pass'],$user['pass'])){
+      $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
+      $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$pass."',profImg='".$_FILES['profImg']['name']."',refImg='".$_FILES['refImg']['name']."',badge1='".$badge1."',tamImg='".$_FILES['tamImg']['name']."',badge2='".$badge2."' WHERE user_id='".$user['user_id']."'";
+  
+      if($dbCon->query($updateCmd) === true){
+        $dbCon->close();
+        echo "<h5>saved<h5>"; 
+      }else{
+        echo "failed";
+      }
     }
   }
   ?>
