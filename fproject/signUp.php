@@ -1,5 +1,11 @@
 <?php
   include './configfinal.php';
+
+  if(!isset($_SESSION['token'])){
+    $token_rondom = openssl_random_pseudo_bytes(16);
+    $token = bin2hex($token_rondom);
+    $_SESSION['token'] = $token;
+  }
 ?>
 
 <!DOCTYPE html>
@@ -99,6 +105,7 @@
         <article>
           <input type="file" name="tamImg" value="">
         </article>
+        <input type="hidden" name="token" value="<?php echo $_SESSION['token'];?>">
       </section>
       <section class="button">
         <button type="submit">Sign up</button>
@@ -110,65 +117,72 @@
 
   <?php
 if($_SERVER['REQUEST_METHOD']=='POST'){
-
-  if($_POST['fname'] != '' && $_POST['lname'] != '' && $_POST['atype'] != '' && $_POST['dob'] != '' && $_POST['email'] != '' && $_POST['conPass'] != '' && $_POST['pass'] != '' && $_FILES['profImg'] != '' ){
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname']; 
-    $atype = $_POST['atype'];
-    $dob = $_POST['dob']; 
-    $email = $_POST['email'];
-    
-    //should check img
-    // $profdestDir = './img/profile_img/';
-    // $refdestDir = './img/ref_img/';
-    // $tamdestDir = './img/tam_img/';
-    //you don't need to if it's upload or not,but if it's uploaded should
-    if (is_uploaded_file($_FILES['profImg']['tmp_name'])){
-      if(uploadfile('./img/profile_img/','profImg')==='true'){
-        $profImg = $_FILES['profImg']['name'];
-
-    }
-      $refImg = $_FILES['refImg']['name'];
-      $tamImg = $_FILES['tamImg']['name'];
-    }
-
-    $_SESSION['timeout'] = time()+900;
-
-    if($_POST['pass'] == $_POST['conPass']){
-      if(strlen($_POST['pass']) <= 8){
-        echo '<h1>password should be more longer</h1>';
+  //check token to verify 
+  if(isset($_POST['token']) && $_POST['token'] === $_SESSION['token']){
+    if($_POST['fname'] != '' && $_POST['lname'] != '' && $_POST['atype'] != '' && $_POST['dob'] != '' && $_POST['email'] != '' && $_POST['conPass'] != '' && $_POST['pass'] != '' && $_FILES['profImg'] != '' ){
+      if(!filter_var(filter_var($_POST["email"],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
+        echo 'invalid';
       }else{
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname']; 
+        $atype = $_POST['atype'];
+        $dob = $_POST['dob']; 
+        $email = $_POST['email'];
+    
+        // $profdestDir = './img/profile_img/';
+        // $refdestDir = './img/ref_img/';
+        // $tamdestDir = './img/tam_img/';
+        //you don't need to if it's upload or not,but if it's uploaded should
+        if (is_uploaded_file($_FILES['profImg']['tmp_name'])){
+          if(uploadfile('./img/profile_img/','profImg')==='true'){
+          $profImg = $_FILES['profImg']['name'];
+          }
+          $refImg = $_FILES['refImg']['name'];
+          $tamImg = $_FILES['tamImg']['name'];
+          }
+          // to check if there are values in $refImg & $tamImg to give user badge
+          if(file_size('refImg') == true && file_size('tamImg') == true){
+            $badge1 = 'waiting';
+            $badge2 = 'waiting';
+          }elseif(file_size('refImg') == true && file_size('tamImg') != true){
+            $badge1 = 'waiting';
+            $badge2 = 'unsubmitted';
+          }elseif(file_size('refImg') != true && file_size('tamImg') == true){
+            $badge1 = 'waiting';
+            $badge2 = 'unsubmitted';
+          }
+
+        $_SESSION['timeout'] = time()+900;
+
+        if($_POST['pass'] != $_POST['conPass']){
+          echo 'password confirmation is not valid';
+        }else{
+          if(strlen($_POST['pass']) < 8){
+            echo '<h1>password should be more longer</h1>';
+          }else{
+
+          $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
+          $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
+            if($dbCon->query($insertCmd)){
+            echo "<h1>Succesfully</h1>";
+            $_SESSION['user'] = $email;
+        
+            if($atype == 'Admin'){
+            $dbCon->close();
+            header("Location: http://localhost/fproject/adminuser.php");// adminHP
+            }else{
+              $dbCon->close();
+              header("Location: http://localhost/fproject/yourpost.php"); //userHp
+            }
+            }
+          }
+        }
       }
     }else{
-      echo 'password confirmation is not valid';
-    }
-    // to check if there are values in $refImg & $tamImg to give user badge
-    //
-    if(file_size('refImg') == true && file_size('tamImg') == true){
-      $badge1 = 'waiting';
-      $badge2 = 'waiting';
-    }elseif(file_size('refImg') == true && file_size('tamImg') != true){
-      $badge1 = 'waiting';
-      $badge2 = 'unsubmitted';
-    }elseif(file_size('refImg') != true && file_size('tamImg') == true){
-      $badge1 = 'waiting';
-      $badge2 = 'unsubmitted';
-    }
-    
-    $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
-    $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
-    if($dbCon->query($insertCmd)){
-      echo "<h1>Succesfully</h1>";
-      $_SESSION['user'] = $email;
-    
-      if($atype == 'Admin'){
-        $dbCon->close();
-        header("Location: http://localhost/fproject/adminuser.php");// adminHP
-      }else{
-        $dbCon->close();
-        header("Location: http://localhost/fproject/yourpost.php"); //userHp
-      }
-    } 
+      echo 'fill out every answers';
+    }   
+  }else{
+    echo 'invalid';
   }
 }
 

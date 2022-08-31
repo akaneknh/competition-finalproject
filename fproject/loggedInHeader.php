@@ -1,7 +1,5 @@
 <?php
-  if(isset($_GET['action'])){
-    
-  }
+  
 ?>
 <!DOCTYPE html>
 <html class="navFooter-html" lang="en">
@@ -57,7 +55,7 @@
         <li class="setting-icon"><a href="#"><i class="fa-solid fa-gear"></i></a>
           <ul class="subMenu">
             <li><a href="./yourPost.php">Dash Board</a></li>
-            <li><a href="./loginCon.php?action=exit">Log out</a></li>
+            <li><a href=".yourpost.php?action=exit">Log out</a></li>
           </ul>
         </li>
       </ul>

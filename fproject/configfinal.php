@@ -2,23 +2,29 @@
 $dbUserName = "root";
 $dbServerName = "localhost";
 $dbpass = "";
-$dbname = "final_db"; //dbname connects to specific 
+$dbname = "final_db"; 
+
 session_start();
 $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
   if($dbCon->connect_error){
     die("connection error");
   }
 
-function specify($value){
-  if(!isset($value)){
-    header("Location: http://localhost/fproject/loginCon.php"); //loginpage
-  }else{
-    $user = $value;
+  if(isset($_GET['action']) && $_GET['action'] == 'exit'){
+        $dbCon->close;
+        session_unset();
+        session_destroy();
+        header("Location: http://localhost/fproject/loginCon.php");
   }
-}
 
 
- //place should be like './files/img'
+
+
+
+//function part
+
+
+ //destDir should be like './files/img'
  function uploadfile($destDir,$pName){
     $sourceFile = $_FILES[$pName];
     $sourceFileDetails = pathinfo($sourceFile['name']);
