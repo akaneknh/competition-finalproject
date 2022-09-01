@@ -18,8 +18,6 @@
     $_SESSION['user']=$user['email'];
     $_SESSION['admin']= $_GET['user'];//
     $dbCon->close();
-    print_r($_SESSION['user']); //akane
-    print_r($_SESSION['admin']); //16
     header("Location: http://localhost/fproject/adminEditUser.php");
   }
 

@@ -10,12 +10,12 @@ $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
     die("connection error");
   }
 
-  if(isset($_GET['action']) && $_GET['action'] == 'exit'){
-        $dbCon->close;
-        session_unset();
-        session_destroy();
-        header("Location: http://localhost/fproject/loginCon.php");
-  }
+// if(isset($_GET['action']) && $_GET['action'] == 'exit'){
+//         $dbCon->close;
+//         session_unset();
+//         session_destroy();
+//         header("Location: http://localhost/fproject/loginCon.php");
+//   }
 
 
 
