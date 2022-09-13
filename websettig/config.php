@@ -35,11 +35,4 @@ function uploadfile($destDir,$pName){
     }
   }
 
-  // function makeSession(){
-  //   if(!isset($_SESSION['token'])){
-  //     $token_rondom = openssl_random_pseudo_bytes(16);
-  //     $token = bin2hex($token_rondom);
-  //     $_SESSION['token'] = $token;
-  //   }
-  // }
 ?>
