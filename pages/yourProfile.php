@@ -18,6 +18,7 @@
   ?>
     <main class="yourProfile-main">
     <?php include '../masterpages/dashboard01.php' ?>
+    <h2 class="dashboard-title">Your profile</h2>
         <form class="yourProfile-form" method="POST" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
             <?php echo '<img src="./img/profile_img/'.$user['profImg'].'">';?>
             <label for="profImg">Profile image</label>

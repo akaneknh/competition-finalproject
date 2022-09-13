@@ -75,3 +75,19 @@
   border:none;
   width: 500px;
 }
+
+.saved {
+  text-align: left;
+  padding-top: 20px;
+  color: #4EA1A5;
+  font-size: 18px;
+}
+
+.saved > i {
+  padding-right: 5px;
+} 
+
+.dashboard-title {
+  color: #333333;
+  padding-bottom: 50px;
+}

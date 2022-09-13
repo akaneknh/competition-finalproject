@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="../masterpages/css/profileDashboard.css">
   <link rel="stylesheet" href="../masterpages/css/logIn.css">
   <link rel="stylesheet" href="../masterpages/css/signUp.css">
+  <link rel="stylesheet" href="../masterpages/css/postedit.css">
 
 <title>Document</title>
 </head>
@@ -38,9 +39,7 @@
     <!-- NAV -->
     <nav class="logoutNavFooter-nav">
       <ul class="navMenu">
-        <li><a href="#">Find Shared room/house</a></li>
-        <li><a href="#">Comunity</a></li>
-        <li><a href="#">Your Profile</a></li>
+
       </ul>
     </nav>
     <!-- LOGIN SIGNUP -->

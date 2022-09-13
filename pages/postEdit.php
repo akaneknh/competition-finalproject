@@ -28,7 +28,7 @@
   <main class='postedit'>
     <?php include '../masterpages/dashboard01.php' ?>
     <form class="postEdit-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
-      <img src="<?php echo './img/post_img/'.
+      <img class="edit-post-img"src="<?php echo './img/post_img/'.
           $userPost['imgName'];?>">
       <label for="postImg">Image</label>
         <article>
@@ -49,12 +49,7 @@
         <button type="submit">Save</button>
       </div>
     </form>
-    <?php include '../masterpages/dashboard02.php' ?>
-<!-- FOOTER -->
-<?php include '../masterpages/footer.php' ?>
-  
-</body>
-</html>
+
 
 <?php
  if($_SERVER['REQUEST_METHOD']=='POST'){
@@ -65,7 +60,7 @@
   
     if($dbCon->query($updateCmd) === true){
       $dbCon->close();
-      echo "<h5>saved<h5>"; 
+      echo '<h5 class="saved"><i class="fa-solid fa-circle-check"></i>Saved!</h5>'; 
     }else{
       echo $dbCon->error;
       $dbCon->close();
@@ -73,3 +68,10 @@
   }
  }
 ?>
+
+<?php include '../masterpages/dashboard02.php' ?>
+<!-- FOOTER -->
+<?php include '../masterpages/footer.php' ?>
+  
+</body>
+</html>

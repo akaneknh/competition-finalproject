@@ -1,7 +1,7 @@
 
 /* postedit-user */
 
-.postEdit-form img {
+.edit-post-img {
   width: 130px;
   height: 100px;
   object-fit: cover;;
@@ -17,9 +17,9 @@
   border-radius: 5px;
   border:1px solid #8888;
   height: 5vh;
+  width: 60%;
   color: #333333;
   margin-bottom: 5vh;
-  width: 100%;
   padding: 3px 10px;
   font-size: 14px;
 }
@@ -38,7 +38,7 @@
 .postEdit-form  textarea {
   border-radius: 5px;
   height: 15vh;
-  width: 100%;
+  width: 60%;
   border:1px solid #8888;
   padding: 3px 10px;
   font-size: 14px;
@@ -74,9 +74,22 @@
 
 .postEdit-form  [for="postImg"]{
   height: 5vh;
+
 }
 
 .postEdit-form .button{
   display: flex;
   justify-content: center;
 }
+
+.saved {
+  text-align: left;
+  padding-top: 20px;
+  color: #4EA1A5;
+  font-size: 18px;
+
+  
+}
+.saved > i {
+  padding-right: 5px;
+} 

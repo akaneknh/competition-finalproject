@@ -22,7 +22,7 @@
 <?php
     include '../masterpages/dashboard01.php';
 ?>
-
+<h2 class="dashboard-title">Add New Post</h2>
   <form class="addNewPost-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
       <label for="postImg">Image</label>
       <article class="addNewPost-article">
@@ -39,7 +39,7 @@
         <button type="submit">Save</button>
       </div>
 <?php
-    include '../masterpages/dashboard02.php';
+   
     
     if($_SERVER['REQUEST_METHOD']=="POST"){
       $_SESSION['timeout'] = time()+900;
@@ -52,7 +52,7 @@
  
           $postCmd = "INSERT INTO post_tb(title, postContent,user_id, p_date, imgName) VALUES ('".$title."','".$content."','".$userid."','".$date."','".$postImg."')"; 
           if($dbCon->query($postCmd)){
-             echo "<h4>Posted!</h4>";
+             echo '<h4 class="saved"><i class="fa-solid fa-circle-check"></i>Posted!</h4>';
             $_SESSION['user'] = $email;
             $dbCon->close();
           }else{
@@ -65,6 +65,9 @@
 ?>
 
 </form>
+<?php
+include '../masterpages/dashboard02.php';
+?>
 <?php
     include '../masterpages/footer.php';
 ?>

@@ -23,6 +23,7 @@ include '../masterpages/loggedInHeader.php';
   include '../masterpages/dashboard01.php';
   ?>
   <!-- should change inside of action -->
+  <h2 class="dashboard-title">Account Setting</h2>
   <form   class="accountSetting-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
     <h5><div class="required">*</div>is required</h5>
     <section class="accountSetting-section">
